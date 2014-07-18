@@ -1,0 +1,448 @@
+\documentclass[11pt]{article}
+%\usepackage{amsmath, amsthm, enumerate, graphicx, bm, type1cm, amssymb}
+
+\usepackage{amsmath,amsthm,enumerate,graphicx,bm,type1cm,amssymb,epsfig,lscape,setspace,amssymb,url,color,tabu,xcolor,colortbl,rotating,tikz,pdfpages}
+
+
+\bibliographystyle{econometrica}
+
+%\usepackage{amsmath, amsthm, enumerate, graphicx, bm, type1cm, amssymb, natbib, remreset}
+%\usepackage{natbib}
+%\usepackage{setspace}
+\theoremstyle{definition}
+\newtheorem{mc}{MC}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{example}{Example}[section]
+\newtheorem{prop}{Proposition}[section]
+\newtheorem{pr}{Proof}
+
+\newtheorem{assump}{Assumption}[section]
+\newtheorem{lemma}{Lemma}[section]
+\newtheorem{definition}{Definition}[section]
+% \def\stackunder#1#2{\mathrel{\mathop{#2}\limits_{#1}}}
+% \renewcommand{\theequation}{\thesection.\arabic{equation}}
+\newtheorem{corol}{Corollary}[section]
+\newcommand{\argmax}{\mathop{\rm \textit{arg} \ \textit{max}}\limits}
+\newcommand{\argmin}{\mathop{\rm \textit{arg} \ \textit{min}}\limits}
+
+\newcommand{\vecop}{{\rm vec}}
+\newcommand{\E}{{\rm E}}
+\newcommand{\Var}{{\rm Var}}
+\newcommand{\determinant}{{\rm det}}
+\newcommand{\tr}{{\rm tr}}
+\newcommand*\circled[1]{\tikz[baseline=(char.base)]{
+            \node[shape=circle,draw,inner sep=2pt] (char) {#1};}}
+
+\def\inprob{\stackrel{p}{\rightarrow}}
+\def\ninprob{\stackrel{p}{\nrightarrow}}
+\def\indist{\stackrel{d}{\rightarrow}}
+\def\nindist{\stackrel{d}{\nrightarrow}}
+\def\as{\stackrel{a.s.}{\rightarrow}}
+\def\betahn{\hat{\beta}_{n}}
+\def\betao{\beta^{0}}
+\def\sumin{\sum_{i=1}^{n}}
+\def\sumjn{\sum_{i=1}^{n}}
+\def\thetahn{\hat{\theta}_{n}}
+\def\Ho{$H_{0} \ : \ a(\beta^{0})=0$}
+\def\abhat{$a(\hat{\beta})$}
+\def\abo{$a(\beta^{0})$}
+\def\Abbar{$A(\bar{\beta})$}
+\def\bhat{$\hat{\beta}$}
+\def\bo{$\beta^{0}$}
+
+\setlength{\oddsidemargin}{5mm}
+\setlength{\textwidth}{16cm}
+\setlength{\topmargin}{0pt}
+\setlength{\headheight}{0pt}
+\setlength{\headsep}{0pt}
+\setlength{\textheight}{23cm}
+\onehalfspacing
+
+\definecolor{Gray}{gray}{0.85}
+
+\title{Homework 4}
+\author{Robert Ackerman \\ University of North Carolina}
+%\date{}							% Activate to display a given date or no date
+
+\begin{document}
+\maketitle
+
+
+\section{Multivariate Kernel Density Estimator}
+
+Let $Z_1, ..., Z_n$ be i.i.d. copies of a random variable $Z ~ \sim f(x)$ where $Z = (Y, X)$.\\
+
+\subsection{ What is the kernel density estimator of $f(z_o)$?}
+
+\begin{equation*}
+\hat{f}(x_{0}, y_{0}) = \frac{1}{Nh^{2}} \sum_{i=1}^N K\left(\frac{x_i - x_{0}}{h_{x}}\right) K\left(\frac{y_i - y_{0}}{h_{y}}\right)
+\end{equation*}
+
+\noindent
+Where, if we make the simplifying assumption $h_{x}=h_{y}$ becomes:
+
+\begin{equation}
+\hat{f}(x_{0}, y_{0}) = \frac{1}{Nh^{2}} \sum_{i=1}^N K\left(\frac{x_i - x_{0}}{h}\right) K\left(\frac{y_i - y_{0}}{h}\right)
+\end{equation}
+
+
+\subsection{ What is the bias and variance of this estimator?}
+Recall,
+
+\begin{equation*}
+\begin{split}
+Bias & =\mathbb{E}\left[\hat{f}(x_0, y_0)\right]-f\left(x_0, y_0\right) \\
+ & =\mathbb{E}\left[\frac{1}{Nh^{2}} \sum_{i=1}^{N} K\left(\frac{x_i - x_{0}}{h}\right) K\left(\frac{y_i - y_{0}}{h}\right)\right]-f\left(x_0, y_0\right) \\
+ & =\frac{1}{h^{2}}\mathbb{E}\left[K\left(\frac{x_1 - x_{0}}{h}\right) K\left(\frac{y_1 - y_{0}}{h}\right)\right]-f\left(x_0, y_0\right) \ \text{(by i.i.d)} \\
+ & = \frac{1}{h^{2}}\int\int K\left(\frac{x_1 - x_{0}}{h}\right) K\left(\frac{y_i1- y_{0}}{h}\right)f(x_{1},y_{1})\partial{x_{1}}\partial{y_{1}}-f\left(x_0, y_0\right) \\
+ & = \frac{1}{h^{2}}\int\int K(u) K(v)f(x_{0}+hu,y_{0}+hv)h\partial{u}h\partial{v}-f\left(x_0, y_0\right)  \\
+ & \left(\text{Where} \ u=\frac{x_{1}-x_{0}}{h}, v=\frac{y_{1}-y_{0}}{h}, \implies \partial{x_{1}}=h\partial{u}, \partial{y_{1}}=h\partial{v} \right) \\
+ \end{split}
+\end{equation*}
+\begin{equation}
+\begin{split}
+ & = \int\int K(u) K(v)f(x_{0}+hu,y_{0}+hv)\partial{u}\partial{v}-f\left(x_0, y_0\right)  \hspace{15mm}\\ 
+\end{split}
+\end{equation}
+
+\noindent
+Now, a taylor series expansion of $f(x_{0}+hu,y_{0}+hv)$ gives:
+
+\begin{equation*}
+\begin{split}
+f(x_{0}+hu,y_{0}+hv) &= \sum_{j=0}^{\infty} \sum_{k=0}^{\infty} \frac{h^{j+k}}{j!k!}\left(\frac{\partial^{j+k}{f}(x_{0},y_{0})}{\partial^{j}u\partial^{k}v}\right)u^{j}v^{k} \\
+\end{split}
+\end{equation*}
+Simplifying notation:
+
+\begin{equation*}
+\begin{split}
+C_{j,k}\left(x_{0},y_{0}\right) & = \frac{1}{j!k!}\left(\frac{\partial^{j+k}{f}(x_{0},y_{0})}{\partial^{j}u\partial^{k}v}\right)
+\end{split}
+\end{equation*}
+Yields:
+
+\begin{equation}
+\begin{split}
+\hspace{17.5mm} &=  \sum_{j=0}^{\infty} \sum_{k=0}^{\infty} h^{j+k}C_{j,k}\left(x_{0},y_{0}\right)u^{j}v^{k}
+\end{split}
+\end{equation}
+Plugging (3) into (2) gives:
+
+\begin{equation*}
+\begin{split}
+ &  \int\int K(u) K(v) \sum_{j=0}^{\infty} \sum_{k=0}^{\infty} h^{j+k}C_{j,k}\left(x_{0},y_{0}\right)u^{j}v^{k}\partial{u}\partial{v}-f\left(x_0, y_0\right)  \\ 
+=&\sum_{j=0}^{\infty} \sum_{k=0}^{\infty} h^{j+k}C_{j,k}\left(x_{0},y_{0}\right) \left[\int K(u)u^{j}\partial{u}\right] \left[\int K(v)v^{k}\partial{v}\right] -f\left(x_0, y_0\right)  \\ 
+=&\sum_{j=0}^{\infty} \sum_{k=0}^{\infty} h^{j+k}C_{j,k}\mu_{j}\mu_{k} -f\left(x_0, y_0\right)  \\ 
+\end{split}
+\end{equation*}
+Where $\mu_{j}$ and $\mu_{k} $ are the $j^{th}$ and $k^{th}$ moments of the $x$ and $y$ kernels.
+
+\begin{equation*}
+\begin{split}
+=&f(x_{0},y_{0})\int K(u)\partial{u}\int K(v)\partial{v} \\
++& h\frac{\partial f(x_{0},y_{0})}{\partial{v}}\int K(u)\partial{u}\int vK(v)\partial{v} + \hdots \\  
++ & h^{p-1} \frac{\partial^{p-1} f(x_{0},y_{0})}{\partial^{p-1} v} \int K(u)\partial{u}\int v^{p-1}K(v)\partial{v}\\
++ & h^{p} \frac{\partial^{p} f(x_{0},y_{0})}{\partial^{p} v} \int K(u)\partial{u}\int v^{p}K(v)\partial{v} + \hdots \\
++ & h\frac{\partial f(x_{0},y_{0})}{\partial{v}}\int uK(u)\partial{u}\int K(v)\partial{v} + \hdots \\
++ & h^{p-1} \frac{\partial^{p-1} f(x_{0},y_{0})}{\partial^{p-1} u} \int u^{p-1}K(u)\partial{u}\int K(v)\partial{v}\\
++ & h^{p} \frac{\partial^{p} f(x_{0},y_{0})}{\partial^{p} u} \int u^{p}K(u)\partial{u}\int K(v)\partial{v}   \\
++ &\sum_{j=p+1}^{\infty} \sum_{k=p+1}^{\infty} h^{j+k}C_{j,k}\mu_{j}\mu_{k} -f\left(x_0, y_0\right)
+\end{split}
+\end{equation*}
+We note the following:
+\begin{equation*}
+\begin{split}
+& \int K(u)\partial{u}=\int K(v)\partial{v} =1 \\
+& \text{(by definition the integral of a density is one)} \\
+& \int uK(u)\partial{u}=\int vK(v)\partial{v} =0 \\
+& \text{(by assumption that our kernel is symmetric around 0)} \\
+& \int u^{p-1}K(u)\partial{u} = \int v^{p-1}K(v)\partial{v} = 0 \\
+& \text{(since we are using a $p^{th}$ order kernel)} \\
+\end{split}
+\end{equation*}
+
+\noindent
+Applying these to the terms in the previous step leaves:
+
+\begin{equation*}
+\begin{split}
+ &= f(x_{0},y_{0}) + h^{p} \frac{\partial^{p} f(x_{0},y_{0})}{\partial^{p} v} \int v^{p}K(v) \\
+ &+ h^{p} \frac{\partial^{p} f(x_{0},y_{0})}{\partial^{p} u} \int u^{p}K(u)\partial{u} \\
+ &+ \sum_{j=p+1}^{\infty} \sum_{k=p+1}^{\infty} h^{j+k}C_{j,k}\mu_{j}\mu_{k} -f\left(x_0, y_0\right) \\
+\end{split}
+\end{equation*}
+
+\begin{equation*}
+\begin{split}
+ &=  h^{p} \frac{\partial^{p} f(x_{0},y_{0})}{\partial^{p} v} \int v^{p}K(v) + h^{p} \frac{\partial^{p} f(x_{0},y_{0})}{\partial^{p} u} \int u^{p}K(u)\partial{u} \\
+ &+ \sum_{j=p+1}^{\infty} \sum_{k=p+1}^{\infty} h^{j+k}C_{j,k}\mu_{j}\mu_{k}  \\
+ &=h^{p}\left[ \frac{\partial^{p} f(x_{0},y_{0})}{\partial^{p} v} \int v^{p}K(v) + \frac{\partial^{p} f(x_{0},y_{0})}{\partial^{p} u} \int u^{p}K(u)\partial{u} \right]\\
+ &+ \sum_{j=p+1}^{\infty} \sum_{k=p+1}^{\infty} h^{j+k}C_{j,k}\mu_{j}\mu_{k} \\
+ &= O(h^{p}) + O(h^{p+1}) +O(h^{p+2}) \hdots \\
+\end{split}
+\end{equation*}
+\noindent
+Finally, since the first term is the dominant term we have:
+
+\begin{equation}
+Bias = O\left(h^{p}\right)
+\label{eq:bias}
+\end{equation}
+\noindent
+Now, we turn to variance:
+
+\begin{equation*}
+\begin{split}
+V\left[\hat{f}(x_{0}, y_{0})\right]&=V\left[\frac{1}{Nh^{2}}\sum_{i=1}^{N}K\left(\frac{x_{i}-x_{0}}{h}\right)K\left(\frac{y_{i}-y_{0}}{h}\right)\right] \\
+ &=\frac{1}{N^{2}h^{4}}V\left[\sum_{i=1}^{N}K\left(\frac{x_{i}-x_{0}}{h}\right)K\left(\frac{y_{i}-y_{0}}{h}\right)\right] \\
+ &=\frac{1}{N^{2}h^{4}}V\left[K\left(\frac{x_{1}-x_{0}}{h}\right)K\left(\frac{y_{1}-y_{0}}{h}\right)\right] \text{(by i.i.d.)} \\
+ &  =\frac{1}{N^{2}h^{4}}\left[\mathbb{E}\left[K^{2}\left(\frac{x_{1}-x_{0}}{h}\right)K^{2}\left(\frac{y_{1}-y_{0}}{h}\right)\right]-\mathbb{E}^{2}\left[K\left(\frac{x_{1}-x_{0}}{h}\right)K\left(\frac{y_{1}-y_{0}}{h}\right)\right]\right] \\
+\end{split}
+\end{equation*}
+
+\noindent
+From (\ref{eq:bias}), we note the second term:
+\begin{equation*}
+\begin{split}
+\mathbb{E}^{2}\left[K\left(\frac{x_{1}-x_{0}}{h}\right)K\left(\frac{y_{1}-y_{0}}{h}\right)\right] =\left[O(h^{2})\right]^{2} =O(h^{4})\\
+\end{split}
+\end{equation*}
+
+So, we have:
+\begin{equation*}
+\begin{split}
+V\left[\hat{f}(x_{0}, y_{0})\right]&=\frac{1}{N^{2}h^{4}}\left[\mathbb{E}\left[K^{2}\left(\frac{x_{1}-x_{0}}{h}\right)K^{2}\left(\frac{y_{1}-y_{0}}{h}\right)\right]-O(h^{4})\right] \\
+ &=\frac{1}{N^{2}h^{4}}\left[\int \int \left[K^{2}\left(\frac{x_{1}-x_{0}}{h}\right)K^{2}\left(\frac{y_{1}-y_{0}}{h}\right) f(x_{1},y_{1})\partial x_{1} \partial y_{1}\right]-O(h^{4}) \right]
+\end{split}
+\end{equation*}
+\noindent
+Applying a change of variables as before gives:
+
+\begin{equation*}
+\begin{split}
+ &=\frac{1}{N^{2}h^{4}}\left[\int \int \left[K^{2}(u)K^{2}(v) f(x_{0+hu},y_{0}+hv)h\partial u h\partial v\right]-O(h^{4}) \right]\\
+ & \text{(substituting in (3))} \\
+ &= \frac{1}{N^{2}h^{4}}\left[\int \int \left[K^{2}(u)K^{2}(v) \sum_{j=0}^{\infty} \sum_{k=0}^{\infty} h^{j+k}C_{j,k}\left(x_{0},y_{0}\right)u^{j}v^{k}h^{2}\partial u \partial v\right]-O(h^{4}) \right]\\
+ &= \frac{1}{N^{2}h^{4}}\left[  \sum_{j=0}^{\infty} \sum_{k=0}^{\infty} h^{j+k}C_{j,k}\left(x_{0},y_{0}\right) \int \int \left[K^{2}(u)K^{2}(v)u^{j}v^{k}h^{2}\partial u \partial v\right]-O(h^{4}) \right] \\
+ & \text{(based on the expansion in the bias derivation)} \\
+ &= \frac{1}{N^{2}h^{4}}\left[O(h^{2})-O(h^{4})\right] \\
+ & \text{(Again, the first term is dominant)} \\
+ &= \frac{1}{N^{2}h^{4}}\left[O(h^{2})\right] \\
+ &=O\left(\frac{1}{N^{2}h^{4}}\times h^{2}\right) = O\left(\frac{1}{Nh^{2}}\right)
+\end{split}
+\end{equation*}
+
+\noindent So finally we have,
+
+\begin{equation}
+\begin{split}
+V\left[\hat{f}(x_{0}, y_{0})\right]&=O\left(\frac{1}{Nh^{2}}\right)
+\end{split}
+\end{equation}
+
+\subsection{What is the optimal bandwidth that minimizes the MSE of this estimator? Explain the curse of dimensionality by comparing the rate of convergence of the estimator of $f(z_{0})$ using optimal bandwidth with that done in class for a scalar $Z$.}
+
+Recall,
+
+\begin{equation*}
+\begin{split}
+MSE(\hat{\theta})&=\mathbb{E}[(\hat{\theta}-\theta)^{2}] =\mathbb{E}[((\hat{\theta}-\mathbb{E}[\hat{\theta}])+(\mathbb{E}[\hat{\theta}] - \theta))^{2}] \\
+&=\mathbb{E}[(\hat{\theta}-\mathbb{E}[\hat{\theta}])^{2}+(\mathbb{E}[\hat{\theta}] - \theta)^{2} + 2(\hat{\theta}-\mathbb{E}[\hat{\theta}])(\mathbb{E}[\hat{\theta}]-\theta)] \\
+& \text{(the last term $=0$ by L.I.E.)} \\
+&= \mathbb{E}[(\hat{\theta}-\mathbb{E}[\hat{\theta}])^{2}+(\mathbb{E}[\hat{\theta}] - \theta)^{2}] \\
+& =\left(\mathbb{E}[\hat{\theta}-\theta)\right)^{2} + \mathbb{E}\left[(\hat{\theta}-\mathbb{E}(\hat{\theta}))^{2}\right]\\
+&= Bias^{2} + Variance\\
+&\approx c_{1}h^{2p}+ c_{2}\frac{1}{Nh^{2}}\\
+\end{split}
+\end{equation*}
+
+Then to find the optimal bandwidth we take the F.O.C. of $MSE$ w.r.t. $h$:
+
+\begin{equation*}
+\begin{split}
+\frac{\partial MSE}{\partial h} &=2pc_{1}h^{2p-1}-2c_{2}\frac{1}{Nh^{3}} \\
+0 & = 2pc_{1}h^{2p-1}-2c_{2}\frac{1}{Nh^{3}} \\
+2c_{2}\frac{1}{Nh^{3}} &= 2pc_{1}h^{2p-1}\\
+c_{2}\frac{1}{Nh^{3}} &= pc_{1}h^{2p-1}\\
+c_{2}\frac{1}{N} &= pc_{1}h^{2p-1}h^{3}\\
+c_{2}\frac{1}{Npc_{1}} &= h^{2p-1}h^{3}\\
+c_{2}\frac{1}{Npc_{1}} &= h^{2p-1+3}\\
+c_{2}\frac{1}{Npc_{1}} &= h^{2p+2}\\
+\end{split}
+\end{equation*}
+
+\noindent
+$\implies h^{*}=O\left(N^{-\frac{1}{2p+2}}\right)$
+
+\noindent
+In class we derived, $ h^{*}=O\left(N^{-\frac{1}{2p+1}}\right)$.  Since optimal h depends on sample size means increasing the dimension means that we need to increase our sample size, which is the curse of dimensionality.
+
+\subsection{We are often interested in finding $f(z)$ for the entire support of $Z$.  Assume that this support is compact.  Find out the optimal bandwidth by minimizing IMSE instead of MSE.}
+
+\begin{equation}
+\begin{split}
+IMSE=\int_z MSE[\hat{f}(z)\partial z 
+\end{split}
+\end{equation}
+
+To find the optimal $h$, take the F.O.C. of (6) w.r.t. $h$ and set it equal to zero:
+
+\begin{equation*}
+\begin{split}
+\frac{\partial IMSE}{\partial h} &= \frac{\partial}{\partial h} \int_z MSE[\hat{f}(z)\partial z =0 \\
+ &=\int_z \frac{\partial}{\partial h} MSE[\hat{f}(z)\partial z =0\\
+ & (\text{Using what we found in the previous section}) =0\\ 
+ &= \int_z \left(2pc_{1} h^{2p-1}-2c_{2} \frac{1}{Nh^{3}}\right) =0\\
+ 2h^{2p-1} \int_{z}pc_{1} & = \frac{2}{Nh^{3}} \int_{z} c_{2} \\
+ h^{2p+2}&=\frac{1}{N}\left(\int_{z}pc_{1}\right)^{-1} \int_{z}c_2 \\
+ h^{*}&=\left[\frac{1}{N}\left(\int_{z}pc_{1}\right)^{-1} \int_{z}c_2\right]^{\frac{1}{2-+2}} \\ 
+ h^{*}&=O\left(N^{-\frac{1}{2p+2}}\right) \\
+\end{split}
+\end{equation*}
+
+
+\section{Problem 9-3 of Cameron and Trivedi \textit{Microeconometrics} (page 335)}
+
+
+Use the Section 4.6.4 data on health expenditure. Use a kernel density estimate with Gaussian kernel.
+
+\subsection{Obtain the kernel density estimate for health expenditure, choosing a suitable bandwidth by eyeballing and trial and error.  State the bandwidth chosen.}
+
+\begin{center}
+\includegraphics[scale=0.75]{HW4Q2G1.jpg}
+\end{center}
+As noted in the figure title, this estimate is using a bandwidth of $h=100$. 
+
+\subsection{Obtain the kernel density estimate for natural logarithm of health expenditure, choosing a suitable bandwidth by eyeballing and trial and error. State the bandwidth chosen.}
+
+\begin{center}
+\includegraphics[scale=0.75]{HW4Q2G2.jpg}
+\end{center}
+As noted in the figure title, this estimate is using a bandwidth of $h=0.25$.
+
+\subsection{Compare your answer in part (b) to an appropriate histogram.}
+
+\begin{center}
+\includegraphics[scale=0.75]{HW4Q2G3.jpg}
+\end{center}
+The kernel estimate, and the histogram estimate yield similar results.  The shape of the estimates for the density of log medical care expenditures are roughly the same, but the kernel density estimate is obviously smoother.  
+
+\subsection{If possible superimpose a fitted normal density on the same graph as the kernel density estimate from part (b).  Do health expenditures appear to be log-normally distributed?}
+
+\begin{center}
+\includegraphics[scale=0.75]{HW4Q2G4.jpg}
+\end{center}
+The kernel estimated density is very close to the normal density, so log medical expenditures do appear to be log-normally distributed.  
+
+\section{Gregory and Veall (1985), Formulating Wald Tests of Nonlinear Restrictions, \textit{Econometrica}, 53, 1465-1468. }
+
+Suppose that you have n observations ${(y_t, X_{1t}, X_{2t}) : t = 1, ..., n}$ from the linear regression model\
+\begin{equation}
+y_t = \beta_0 + \beta_1X_{1,t} + \beta_2X_{2,t} + \epsilon_t.
+\label{eq:model}
+\end{equation}
+
+\noindent
+You want to test $H_g : g(\beta_1, \beta_2) = 0$ against $K_g : g(\beta_1, \beta_2) \ne 0$ where $g(\beta_1, beta_2) = \beta_1 - 1/\beta_2$. Note that the same test can alternatively be done by testing $H_h :h(\beta_1, \beta_2) = 0$ against $K_h : h(\beta_1, \beta_2) \ne 0$ where $h(\beta_1, \beta_2) = \beta_1\beta_2-1$.\\
+\\
+\newpage
+Consider the following DGP based on (\ref{eq:model}):\\
+$$\beta_0 = 1, \beta_1 = 10, \beta_2 = 0.1,$$\\
+
+\[
+  \begin{bmatrix} X_{1,t} \\ Y_{2,t} \end{bmatrix} 
+	= 
+  \begin{bmatrix} 0.6 & 0.3 \\ 0.3 & 0.6 \end{bmatrix} 
+  \begin{bmatrix}  X_{1,t-1} \\ Y_{2,t-1} \end{bmatrix}
+  	+
+  \begin{bmatrix}  V_{1,t} \\ V_{2,t} \end{bmatrix}
+\]\\
+\\
+Where $(\epsilon_t, V_{1,t}, V_{2,t}) \overset{i.i.d.}{\sim} N(0, I_3) $ 
+
+\subsection{Draw $n=20$ observations from the model and perform the Wald tests for $H_{g}$ and $H_{h}$.  Keeping everything else fixed, repeat the experiment 1000 times by drawing a new series of $\{\epsilon_{t}\}$ each time.  Perform the two Wald tests every time.  Report the empirical size of the two tests.}
+
+\begin{center}
+\begin{tabular}{l c}
+\hline\hline
+\multicolumn{2}{c}{\textbf{Part (a) Results}} \\
+\hline\hline 
+ & Empirical Size  \\
+$H_{g}$ & 0.3220 \\
+$H_{h}$ & 0.0700 \\
+\hline\hline
+\end{tabular} 
+\end{center} 
+
+\noindent
+Empirical size is calculated based on the percentage of times the null is rejected in our 1000 experiments.  Obviously, with small sample size the form of the null hypothesis can have a substantial impact on the empirical size of your results.  
+
+\subsection{Redo part (a) for each sample size $n \in \{20, 30, 40, \hdots, 400\}$ and draw a figure as follows.  The $x$-axis has a grid for $n$, while the $y$-axis has the empirical size.  You plot two lines: the empirical size based on the $g$-type test and that based on the $h$-type test.  Hint: when $n=400$, the empirical size of both tests should be fairly close to nominal size, $5\%$}.
+
+\begin{center}
+\includegraphics[scale=0.75]{HWQ3BGraph.jpg}
+\end{center}
+
+\noindent
+As we increase sample size, the discrepancy between the two forms of the null hypothesis begins to decrease.  At $n=400$ both are getting close to nominal size $0.05$, although there is still a difference and the form of the null still matters for the empirical size of our test.
+
+\subsection{Now let us see if bootstrap can help us obtain a better approximation of nominal size when $n$ is as small 20.  To do residual-based bootstrap, take the number of bootstrap replication $B=999$ (this is entirely under your control).  Follow the algorithm described below for $H_{g}$. \\ $\hdots$ \\ Repeat the Monte Carlo experiment 1000 times to obtain the empirical size of the test based on bootstrap critical value.  Now do the same for the null hypothesis $H_{h}$.  Compare your results with that in part (a).}
+
+\begin{center}
+\begin{tabular}{l c c}
+\hline\hline
+\multicolumn{3}{c}{\textbf{Part (c) Results}} \\
+\hline\hline 
+ & & Empirical Size \\
+ & \underline{Empirical Size} & \underline{with Bootstrap} \\
+$H_{g}$ & 0.3220 & 0.209 \\
+$H_{h}$ & 0.0700 & 0.008 \\
+\hline\hline
+\end{tabular} 
+\end{center} 
+\noindent
+Again, empirical size is calculated based on the percentage of times the null is rejected in our 1000 experiments.  Bootstrap gets empirical size closer to nominal size for $H_{g}$, but it actually makes it worse for $H_{h}$.  
+
+My code for producing these results is contained in the following section.
+
+\section{Codes for Problem 3 (c)} 
+My codes for part (c) are not easily separated from my code for all of Question 3, so I have included that main file in its entirety.  I have also included the three short function codes that fmincon in the main code calls upon for the NLS Objective function, and the $H_{g}$ and $H_{h}$ constraints.
+
+\subsection{Question 3 Main File}
+
+\begin{center}
+\includepdf[pages={1-},scale=1]{HW4Q3MainFile.pdf}
+\end{center}
+
+\subsection{Question 3 NLS Objective File}
+
+\begin{center}
+\includegraphics[scale=1.0]{HW4Q3NLSObjFile.jpg}
+\end{center}
+
+\subsection{Question 3 $H_{g}$ Constraint File}
+
+\begin{center}
+\includegraphics[scale=1.0]{HW4Q3HgConFile.jpg}
+\end{center}
+
+\newpage
+\subsection{Question 3 $H_{h}$ Constraint File}
+
+\begin{center}
+\includegraphics[scale=2.0]{HWQ3HhConFile.jpg}
+\end{center}
+
+\end{document}
+
+
+
+
+
+
+
+
+
+
+
